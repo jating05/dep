@@ -299,7 +299,7 @@ function openPopup(result) {
     let popupContent = '<h10>Conflicts:</h10>';
 
     if (result.conflict && result.conflictDetails.length > 0) {
-        result.conflictDetails.forEach((detail, index) => {
+        result.conflictDetails.forEach((detail) => {
             popupContent += `
             <div>
                 <label>
@@ -314,23 +314,22 @@ function openPopup(result) {
 
     document.getElementById('popup-content').innerHTML = popupContent;
 
-    // Get the submit button and disable it initially
     const submitButton = document.getElementById('submitAttachment');
     submitButton.disabled = true;
 
-    // Select all checkboxes
     const checkboxes = document.querySelectorAll('.conflict-checkbox');
+    const attachmentInput = document.getElementById('attachment');
 
-    // Function to check if all checkboxes are checked
-    function checkCheckboxes() {
+    function updateSubmitButtonState() {
         const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-        submitButton.disabled = !allChecked;
+        const fileProvided = attachmentInput.files.length > 0;
+        submitButton.disabled = !(allChecked && fileProvided);
     }
 
-    // Add event listeners to checkboxes
     checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', checkCheckboxes);
+        checkbox.addEventListener('change', updateSubmitButtonState);
     });
+    attachmentInput.addEventListener('change', updateSubmitButtonState);
 }
 
 //Function to close the popup 
